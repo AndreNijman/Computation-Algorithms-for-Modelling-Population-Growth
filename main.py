@@ -16,16 +16,22 @@ def menu(opt):
         print("(6) Exit program")
         input_validation(prompt="Enter your choice: ", type='menu')
     elif opt == 1:
-        print("This option is not implemented yet.")
+        print("Debug: Model 1 selected")
+        naive_and_sophisticated_model()
     elif opt == 2:
-        print("This option is not implemented yet.")
+        print("Debug: Model 2 selected")
+        time_to_target_population()
     elif opt == 3:
-        print("This option is not implemented yet.")
+        print("Debug: Model 3 selected")
+        compare_sophisticated_models()
     elif opt == 4:
-        print("This option is not implemented yet.")
+        print("Debug: Model 4 selected")
+        generate_detailed_projections()
     elif opt == 5:
-        print("This option is not implemented yet.")
+        print("Debug: Model 5 selected")
+        fission_event_frequency()
     elif opt == 6:
+        print("Debug: Exit selected")
         print("Exiting program. Goodbye!")
         exit()
 
@@ -40,9 +46,31 @@ def input_validation(prompt, type):
     while True:
         choice = input(prompt).strip()
         if choice in valid_choices:
-            menu(choice)
+            if type == 'menu':
+                menu(int(choice))
         else:
             print(f"Invalid choice. Please enter one of the following: {', '.join(valid_choices)}")
+
+
+def naive_and_sophisticated_model():
+    print("This option is not implemented yet.")
+
+
+def time_to_target_population():
+    print("This option is not implemented yet.")
+
+
+def compare_sophisticated_models():
+    print("This option is not implemented yet.")
+
+
+def generate_detailed_projections():
+    print("This option is not implemented yet.")
+
+
+def fission_event_frequency():
+    print("This option is not implemented yet.")
+
 
 # Call the menu function to display the menu and get the user's choice
 menu(0)
