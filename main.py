@@ -22,8 +22,10 @@ def run_chosen_module(module_number):
     It takes the module number as an argument and calls the corresponding function.
     '''
     if module_number == 1:
-        naive_model()
-        sophisticated_model()
+        n_initpopulation, n_growth_rate, n_growth_time_unit, n_model_type = naive_model()
+        s_initpopulation, s_growth_rate, s_growth_time_unit, s_model_type, fission_event_frequency = sophisticated_model()
+        print(run_models(n_initpopulation, n_growth_rate, n_growth_time_unit, n_model_type))
+        print(run_models(s_initpopulation, s_growth_rate, s_growth_time_unit, s_model_type, fission_event_frequency))
     elif module_number == 2:
         print("Debug: Module 2 selected")
     elif module_number == 3:
@@ -56,6 +58,7 @@ def naive_model():
     This function runs the naive model.
     It prompts the user for input and performs calculations based on the naive model.
     '''
+    print("\nNaive model")
     initial_population = int(input("Enter the initial population: "))
     growth_rate = float(input("Enter the growth rate (as a percentage without the symbol): "))
     growth_time_unit = input("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ").strip().lower()
@@ -67,39 +70,40 @@ def sophisticated_model():
     This function runs the sophisticated model.
     It prompts the user for input and performs calculations based on the sophisticated model.
     '''
+    print("\nSophisticated model")
     initial_population = int(input("Enter the initial population: "))
     growth_rate = float(input("Enter the growth rate (as a percentage without the symbol): "))
     growth_time_unit = input("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ").strip().lower()
-    return initial_population, growth_rate, growth_time_unit, "sophisticated"
+    fission_event_frequency = input("Enter the fission event frequency (day, half-day, quarter-day, hour, minute): ").strip()
+    return initial_population, growth_rate, growth_time_unit, "sophisticated", fission_event_frequency
 
-def run_models(initial_population, growth_rate, growth_time_unit, model_type):
+def run_models(initial_population, growth_rate, growth_time_unit, model_type, fission_event_frequency=None):
     '''
     This function runs the chosen model (naive or sophisticated) based on the user's input.
     It performs calculations and displays the results.
     '''
     if model_type == "naive":
-        # Perform naive model calculations
-        print("Running naive model...")
-        # Add your calculations here
+        return initial_population*( 1 + (growth_rate/100))**(1/time_conversion(growth_time_unit, "day"))
     elif model_type == "sophisticated":
-        # Perform sophisticated model calculations
-        print("Running sophisticated model...")
-        # Add your calculations here
+        return initial_population*( 1 + ((growth_rate/100))/time_conversion(growth_time_unit, fission_event_frequency))**(1/time_conversion(growth_time_unit))
         
         
-def time_conversion():
+def time_conversion(unit, period):
+    '''
+    This function converts time units to a unit.
+    It takes the unit and period as arguments and returns the conversion factor.
+    '''
+    # Define a dictionary to convert time units
     periods = {
-        "day":86400,
-        "half-day":43200,
-        "quarter-day":60*60*6,
-        "hour":3600,
-        "minute":60,
-        "second":1
+        "day": 86400,
+        "half-day": 43200,
+        "quarter-day": 60*60*6,
+        "hour": 3600,
+        "minute": 60,
+        "second": 1
     }
-    c = periods[period]/periods[convert]
-    print(str(c))
-amount = time_conversion()
-print(f"There are {amount} {period}s in {convert}.")
+    c = periods[period]/periods[unit]
+    return c
 
 
 # Call the menu function to display the menu and get the user's choice
