@@ -34,12 +34,27 @@ def run_chosen_module(module_number):
 
         naive_result = run_models(n_initpopulation, n_growth_rate, n_growth_time_unit, n_model_type,
                                   projection_time=projection_time, projection_time_unit=projection_time_unit)
-        print(naive_result)
+        print(f'Naive model projected population size: {naive_result}')
 
         sophisticated_result = run_models(s_initpopulation, s_growth_rate, s_growth_time_unit, s_model_type,
                                           fission_event_frequency=fission_event_frequency,
                                           projection_time=projection_time, projection_time_unit=projection_time_unit)
-        print(sophisticated_result)
+        print(f'Sophisticated model projected population size: {sophisticated_result}')
+
+    if module_number == 2:
+        print("\nTime for a sophisticated model to reach the target population")
+        initial_population, growth_rate, growth_time_unit, model_type = sophisticated_model()
+        target_population = input_validation("Enter the target population: ", type='int')
+        fission_event_frequency = input_validation("Enter the fission-event frequency time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
+
+        if fission_event_frequency == "custom":
+            custom_frequency = input_validation("Enter the number of fission events per growth rate time unit: ", type='float')
+            fission_event_frequency = custom_frequency
+
+        time_to_target = run_models(initial_population, growth_rate, growth_time_unit, model_type,
+                                     fission_event_frequency=fission_event_frequency,
+                                     projection_time=target_population, projection_time_unit="population")
+        print(f'Time to reach target population: {time_to_target} seconds')
 
 
 def input_validation(prompt, type):
@@ -68,8 +83,9 @@ def input_validation(prompt, type):
 
         print("Invalid input. Please try again.")
 
-    print("Too many invalid attempts. Exiting. AAHAAN STOP SPAMMINNG, IK ITS YOU 😔😔😔")
+    print("Too many invalid attempts. Exiting. AAHAAN STOP SPAMMING, IK ITS YOU 😔😔😔")
     exit()
+
 
 def naive_model():
     '''
