@@ -32,12 +32,14 @@ def run_chosen_module(module_number):
         print(f"Sophisticated Model: I = {s_initpopulation}, g = {s_growth_rate}% per {s_growth_time_unit}, fission event frequency = {fission_event_frequency}")
         print(f"Projection time: {projection_time} {projection_time_unit}\n")
 
-        print(run_models(n_initpopulation, n_growth_rate, n_growth_time_unit, n_model_type,
-                         projection_time=projection_time, projection_time_unit=projection_time_unit))
+        naive_result = run_models(n_initpopulation, n_growth_rate, n_growth_time_unit, n_model_type,
+                                  projection_time=projection_time, projection_time_unit=projection_time_unit)
+        print(naive_result)
 
-        print(run_models(s_initpopulation, s_growth_rate, s_growth_time_unit, s_model_type,
-                         fission_event_frequency=fission_event_frequency,
-                         projection_time=projection_time, projection_time_unit=projection_time_unit))
+        sophisticated_result = run_models(s_initpopulation, s_growth_rate, s_growth_time_unit, s_model_type,
+                                          fission_event_frequency=fission_event_frequency,
+                                          projection_time=projection_time, projection_time_unit=projection_time_unit)
+        print(sophisticated_result)
 
 
 def input_validation(prompt, type):
@@ -46,7 +48,7 @@ def input_validation(prompt, type):
     Exits after 3 failed attempts.
     '''
     valid_menu = {'1', '2', '3', '4', '5', '6'}
-    valid_units = {'day', 'half-day', 'quarter-day', 'hour', 'minute'}
+    valid_units = {'day', 'half-day', 'quarter-day', 'hour', 'minute', 'custom'}
 
     for _ in range(3):
         value = input(prompt).strip().lower()
@@ -66,9 +68,8 @@ def input_validation(prompt, type):
 
         print("Invalid input. Please try again.")
 
-    print("Too many invalid attempts. Exiting.")
+    print("Too many invalid attempts. Exiting. AAHAAN STOP SPAMMINNG, IK ITS YOU 😔😔😔")
     exit()
-
 
 def naive_model():
     '''
@@ -91,7 +92,12 @@ def sophisticated_model():
     initial_population = input_validation("Enter the initial population: ", type='int')
     growth_rate = input_validation("Enter the growth rate (as a percentage without the symbol): ", type='float')
     growth_time_unit = input_validation("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
-    fission_event_frequency = input_validation("Enter the fission event frequency (day, half-day, quarter-day, hour, minute): ", type='time_unit')
+    fission_event_frequency = input_validation("Enter the fission-event frequency time unit (day, half-day, quarter-day, hour, minute, custom): ", type='time_unit')
+
+    if fission_event_frequency == "custom":
+        custom_frequency = input_validation("Enter the number of fission events per growth rate time unit: ", type='float')
+        return initial_population, growth_rate, growth_time_unit, "sophisticated", custom_frequency
+
     return initial_population, growth_rate, growth_time_unit, "sophisticated", fission_event_frequency
 
 
@@ -101,18 +107,26 @@ def run_models(initial_population, growth_rate, growth_time_unit, model_type, fi
     For naive model: uses simple interest.
     For sophisticated model: uses compound interest adjusted by fission frequency.
     '''
-    t = time_conversion(projection_time_unit, projection_time)  # Convert projection time to seconds
+
+    total_projection_time_in_seconds = time_conversion(projection_time_unit, projection_time)  # Convert projection time to seconds
+    growth_time_unit_in_seconds = time_conversion(growth_time_unit, 1) # Convert growth time unit to seconds
 
     if model_type == "naive":
         # A = P(1 + rt) for naive model
-        return initial_population * (1 + (growth_rate / 100) * (t / time_conversion(growth_time_unit, 1)))
+        projected_population = initial_population * (1 + (growth_rate / 100) * (total_projection_time_in_seconds / growth_time_unit_in_seconds))
+        return projected_population
 
     elif model_type == "sophisticated":
-        # A = P(1 + r/n)^(nt) for sophisticated model
-        fissions_per_growth_unit = time_conversion(growth_time_unit, 1) / time_conversion(fission_event_frequency, 1)
+        if isinstance(fission_event_frequency, str):  # Standard time unit
+            fission_event_frequency_in_seconds = time_conversion(fission_event_frequency, 1)
+            fissions_per_growth_unit = growth_time_unit_in_seconds / fission_event_frequency_in_seconds
+        else:  # Custom frequency
+            fissions_per_growth_unit = fission_event_frequency
+
         rate_per_fission = (growth_rate / 100) / fissions_per_growth_unit
-        total_fissions = t / time_conversion(fission_event_frequency, 1)
-        return initial_population * (1 + rate_per_fission) ** total_fissions
+        total_fissions = total_projection_time_in_seconds / growth_time_unit_in_seconds * fissions_per_growth_unit
+        projected_population = initial_population * (1 + rate_per_fission) ** total_fissions
+        return projected_population
 
 
 def time_conversion(unit, amount):
