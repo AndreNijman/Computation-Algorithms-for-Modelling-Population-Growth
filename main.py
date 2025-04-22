@@ -1,3 +1,5 @@
+from tabulate import tabulate  # Used to format projections in columns (Part 4)
+
 def menu():
     '''
     Displays the main menu to the user and prompts for their selection.
@@ -85,6 +87,92 @@ def run_chosen_module(module_number):
         fission_count = len(populations) - 1
         print(f"Time taken: {fission_count} {fission_unit_label}(s) ({time_elapsed} seconds)")
 
+    elif module_number == 3:
+        '''
+        PART 3: Compare two sophisticated models and display their projected population values.
+        '''
+        print("\nMODULE 3: Compare two sophisticated population models")
+
+        print("\nModel A:")
+        a_init, a_rate, a_unit, a_type, a_freq = sophisticated_model()
+
+        print("\nModel B:")
+        b_init, b_rate, b_unit, b_type, b_freq = sophisticated_model()
+
+        proj_time = input_validation("Enter the amount of time to project: ", type='int')
+        proj_unit = input_validation("Enter the time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
+
+        # Run projections for both models
+        a_result = run_models(a_init, a_rate, a_unit, a_type,
+                              fission_event_frequency=a_freq,
+                              projection_time=proj_time, projection_time_unit=proj_unit)
+
+        b_result = run_models(b_init, b_rate, b_unit, b_type,
+                              fission_event_frequency=b_freq,
+                              projection_time=proj_time, projection_time_unit=proj_unit)
+
+        # Output comparison
+        print(f"\nModel A final population: {a_result}")
+        print(f"Model B final population: {b_result}")
+
+    elif module_number == 4:
+        '''
+        PART 4: Generate detailed projection tables showing population change per fission event.
+        Uses tabulate to format the data into columns.
+        '''
+        print("\nMODULE 4: Generate detailed projections formatted as columns")
+        s_init, s_rate, s_unit, s_type, s_freq = sophisticated_model()
+
+        target = input_validation("Enter the population size to project to (enter 0 to use time instead): ", type='int')
+
+        if target == 0:
+            proj_time = input_validation("Enter the amount of time to project for: ", type='int')
+            proj_unit = input_validation("Enter the projection time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
+        else:
+            proj_time = None
+            proj_unit = "population"
+
+        # Time conversions
+        growth_unit_seconds = time_conversion(s_unit, 1)
+        if isinstance(s_freq, str):
+            fission_unit_seconds = time_conversion(s_freq, 1)
+            fissions_per_unit = growth_unit_seconds / fission_unit_seconds
+        else:
+            fissions_per_unit = s_freq
+            fission_unit_seconds = growth_unit_seconds / fissions_per_unit
+
+        rate_per_fission = (s_rate / 100) / fissions_per_unit
+
+        # Track detailed changes
+        rows = []
+        population = s_init
+        time_elapsed = 0
+
+        # Run until time or population target is reached
+        if proj_unit == "population":
+            while population < target:
+                added = population * rate_per_fission
+                new_pop = population + added
+                rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
+                population = new_pop
+                time_elapsed += fission_unit_seconds
+        else:
+            total_seconds = time_conversion(proj_unit, proj_time)
+            while True:
+                if time_elapsed + fission_unit_seconds > total_seconds:
+                    break
+                added = population * rate_per_fission
+                new_pop = population + added
+                rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
+                population = new_pop
+                time_elapsed += fission_unit_seconds
+
+
+        # Output columns using tabulate
+        print(tabulate(rows, headers=["Opening", "Added", "Closing"], tablefmt="grid"))
+
+    elif module_number == 5:
+        print("Part 5 not implemented yet.")
 
 
 def input_validation(prompt, type):
@@ -149,13 +237,15 @@ def sophisticated_model():
 def run_models(initial_population, growth_rate, growth_time_unit, model_type,
                fission_event_frequency=None, projection_time=None, projection_time_unit=None):
     '''
-    Calculates and returns the projected population or time based on model type.
+    Calculates and returns the projected population using the selected model type.
+    For naive model: uses simple interest.
+    For sophisticated model: uses compound interest adjusted by fission frequency.
     '''
     total_projection_time = time_conversion(projection_time_unit, projection_time)
     growth_unit_time = time_conversion(growth_time_unit, 1)
 
     if model_type == "naive":
-        # Simple interest formula
+        # A = P(1 + rt) for naive model
         return initial_population * (1 + (growth_rate / 100) * (total_projection_time / growth_unit_time))
 
     elif model_type == "sophisticated":
@@ -183,7 +273,8 @@ def run_models(initial_population, growth_rate, growth_time_unit, model_type,
 
 def time_conversion(unit, amount):
     '''
-    Converts time from given unit to seconds.
+    Converts a time quantity from a unit to seconds.
+    It takes the unit and the number of those units as arguments and returns the equivalent number of seconds.
     '''
     seconds_per_unit = {
         "day": 86400,
@@ -196,5 +287,5 @@ def time_conversion(unit, amount):
     return seconds_per_unit[unit] * amount
 
 
-# Start the program
+# Call the menu function to display the menu and start the program
 menu()
