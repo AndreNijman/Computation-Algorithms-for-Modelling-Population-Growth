@@ -55,11 +55,36 @@ def run_chosen_module(module_number):
         print(f"\nSophisticated Model: I = {s_init}, g = {s_rate}% per {s_unit}, fission event frequency = {s_freq}")
         print(f"Target amount: {target}\n")
 
-        # Run projection to target
-        result = run_models(s_init, s_rate, s_unit, s_type,
-                            fission_event_frequency=s_freq,
-                            projection_time=target, projection_time_unit="population")
-        print(f'Time to reach target population: {result} seconds')
+        # Determine number of fission events per growth unit
+        growth_unit_seconds = time_conversion(s_unit, 1)
+        if isinstance(s_freq, str):
+            fission_unit_seconds = time_conversion(s_freq, 1)
+            fissions_per_unit = growth_unit_seconds / fission_unit_seconds
+            fission_unit_label = s_freq
+        else:
+            fissions_per_unit = s_freq
+            fission_unit_seconds = growth_unit_seconds / fissions_per_unit
+            fission_unit_label = "custom time unit"
+
+        # Rate per fission and prepare projection
+        rate_per_fission = (s_rate / 100) / fissions_per_unit
+        population = s_init
+        time_elapsed = 0
+        populations = [round(population, 2)]
+
+        # Keep projecting until we reach or exceed the target
+        while population < target:
+            added = population * rate_per_fission
+            population += added
+            populations.append(round(population, 2))
+            time_elapsed += fission_unit_seconds
+
+        # Output the results
+        print("Forward projection (per fission event):")
+        print(populations)
+        fission_count = len(populations) - 1
+        print(f"Time taken: {fission_count} {fission_unit_label}(s) ({time_elapsed} seconds)")
+
 
 
 def input_validation(prompt, type):
