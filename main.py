@@ -3,40 +3,44 @@ from tabulate import tabulate  # Used to format projections in columns (Part 4)
 def menu():
     '''
     Displays the main menu to the user and prompts for their selection.
-    Calls input validation to handle the choice.
+    Loops until the user chooses to exit (Part 6).
     '''
-    print("This program has five modules. Choose a module to run by typing its number")
-    print("(1) Compare a naive and sophisticated model")
-    print("(2) Time for a sophisticated model to reach the target population")
-    print("(3) Compare two sophisticated population models")
-    print("(4) Generate detailed projections formatted as columns")
-    print("(5) Model increases in fission-event frequency")
-    print("(6) Exit program")
-    input_validation(prompt="Enter your choice: ", type='menu')
+    while True:
+        print("\nThis program has five modules. Choose a module to run by typing its number")
+        print("(1) Compare a naive and sophisticated model")
+        print("(2) Time for a sophisticated model to reach the target population")
+        print("(3) Compare two sophisticated population models")
+        print("(4) Generate detailed projections formatted as columns")
+        print("(5) Model increases in fission-event frequency")
+        print("(6) Exit program")
 
+        # Validate menu selection
+        choice = input_validation(prompt="Enter your choice: ", type='menu')
+
+        if choice == 6:
+            print("Exiting program. Goodbye!")
+            break
+        else:
+            run_chosen_module(choice)
 
 def run_chosen_module(module_number):
     '''
-    Runs the selected module based on user input.
+    Runs the module chosen by the user.
+    Handles all five main module functions of the program.
     '''
     if module_number == 1:
-        # Naive model input
+        # Compare naive and sophisticated model over same timeframe
         n_init, n_rate, n_unit, n_type = naive_model()
-
-        # Sophisticated model input
         s_init, s_rate, s_unit, s_type, s_freq = sophisticated_model()
 
-        # Timeframe input
         print("\nFuture Projection timeframe for both models")
         proj_time = input_validation("Enter the amount of time to project into the future: ", type='int')
         proj_unit = input_validation("Enter the time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
 
-        # Summarise inputs
         print(f"\nNaive Model: I = {n_init}, g = {n_rate}% per {n_unit}")
         print(f"Sophisticated Model: I = {s_init}, g = {s_rate}% per {s_unit}, fission event frequency = {s_freq}")
         print(f"Projection time: {proj_time} {proj_unit}\n")
 
-        # Run projections
         naive_result = run_models(n_init, n_rate, n_unit, n_type,
                                   projection_time=proj_time, projection_time_unit=proj_unit)
         print(f'Naive model projected population size: {naive_result}')
@@ -47,17 +51,13 @@ def run_chosen_module(module_number):
         print(f'Sophisticated model projected population size: {sophisticated_result}')
 
     elif module_number == 2:
-        # Sophisticated model input
+        # Time to reach a target population using the sophisticated model
         s_init, s_rate, s_unit, s_type, s_freq = sophisticated_model()
-
-        # Target population input
         target = input_validation("Enter the target population: ", type='int')
 
-        # Summarise inputs
         print(f"\nSophisticated Model: I = {s_init}, g = {s_rate}% per {s_unit}, fission event frequency = {s_freq}")
         print(f"Target amount: {target}\n")
 
-        # Determine number of fission events per growth unit
         growth_unit_seconds = time_conversion(s_unit, 1)
         if isinstance(s_freq, str):
             fission_unit_seconds = time_conversion(s_freq, 1)
@@ -68,29 +68,25 @@ def run_chosen_module(module_number):
             fission_unit_seconds = growth_unit_seconds / fissions_per_unit
             fission_unit_label = "custom time unit"
 
-        # Rate per fission and prepare projection
         rate_per_fission = (s_rate / 100) / fissions_per_unit
         population = s_init
         time_elapsed = 0
         populations = [round(population, 2)]
 
-        # Keep projecting until we reach or exceed the target
+        # Simulate population growth until the target is reached
         while population < target:
             added = population * rate_per_fission
             population += added
             populations.append(round(population, 2))
             time_elapsed += fission_unit_seconds
 
-        # Output the results
         print("Forward projection (per fission event):")
         print(populations)
         fission_count = len(populations) - 1
         print(f"Time taken: {fission_count} {fission_unit_label}(s) ({time_elapsed} seconds)")
 
     elif module_number == 3:
-        '''
-        PART 3: Compare two sophisticated models and display their projected population values.
-        '''
+        # Compare two separate sophisticated models over the same timeframe
         print("\nMODULE 3: Compare two sophisticated population models")
 
         print("\nModel A:")
@@ -102,7 +98,6 @@ def run_chosen_module(module_number):
         proj_time = input_validation("Enter the amount of time to project: ", type='int')
         proj_unit = input_validation("Enter the time unit (day, half-day, quarter-day, hour, minute): ", type='time_unit')
 
-        # Run projections for both models
         a_result = run_models(a_init, a_rate, a_unit, a_type,
                               fission_event_frequency=a_freq,
                               projection_time=proj_time, projection_time_unit=proj_unit)
@@ -111,15 +106,11 @@ def run_chosen_module(module_number):
                               fission_event_frequency=b_freq,
                               projection_time=proj_time, projection_time_unit=proj_unit)
 
-        # Output comparison
         print(f"\nModel A final population: {a_result}")
         print(f"Model B final population: {b_result}")
 
     elif module_number == 4:
-        '''
-        PART 4: Generate detailed projection tables showing population change per fission event.
-        Uses tabulate to format the data into columns.
-        '''
+        # Generate and print a column-formatted projection table using tabulate
         print("\nMODULE 4: Generate detailed projections formatted as columns")
         s_init, s_rate, s_unit, s_type, s_freq = sophisticated_model()
 
@@ -132,7 +123,6 @@ def run_chosen_module(module_number):
             proj_time = None
             proj_unit = "population"
 
-        # Time conversions
         growth_unit_seconds = time_conversion(s_unit, 1)
         if isinstance(s_freq, str):
             fission_unit_seconds = time_conversion(s_freq, 1)
@@ -142,13 +132,11 @@ def run_chosen_module(module_number):
             fission_unit_seconds = growth_unit_seconds / fissions_per_unit
 
         rate_per_fission = (s_rate / 100) / fissions_per_unit
-
-        # Track detailed changes
         rows = []
         population = s_init
         time_elapsed = 0
 
-        # Run until time or population target is reached
+        # Projection by population or time
         if proj_unit == "population":
             while population < target:
                 added = population * rate_per_fission
@@ -167,12 +155,38 @@ def run_chosen_module(module_number):
                 population = new_pop
                 time_elapsed += fission_unit_seconds
 
-
-        # Output columns using tabulate
         print(tabulate(rows, headers=["Opening", "Added", "Closing"], tablefmt="grid"))
 
-    elif module_number == 5:
-        print("Part 5 not implemented yet.")
+def run_chosen_module(module_number):
+    '''
+    Runs the module chosen by the user.
+    Handles all five main module functions of the program.
+    '''
+    if module_number == 5:
+        # Show how more frequent fission events affect growth (Part 5)
+        print("\nMODULE 5: Model increases in fission-event frequency")
+        init, rate, unit, model_type, _ = sophisticated_model()
+
+        max_events = input_validation("Enter the maximum number of fission events per growth time unit: ", type='int')
+        step = input_validation("Enter the step size to increase frequency: ", type='int')
+        duration = input_validation("Enter how many of your chosen time units to project: ", type='int')
+
+        results = []
+        for freq in range(1, max_events + 1, step):
+            # Calculate the rate per fission event for each frequency
+            fission_rate = (rate / 100) / freq
+
+            # Calculate the number of fissions over the projection time
+            total_fissions = (time_conversion(unit, duration) / time_conversion(unit, 1)) * freq
+
+            # Use compound growth with fission frequency
+            final_pop = init * (1 + fission_rate) ** total_fissions
+
+            results.append([freq, round(final_pop, 2)])
+
+        print("\nEffect of increasing fission-event frequency:")
+        print(tabulate(results, headers=["Fission Events/Unit", "Final Population"], tablefmt="grid"))
+
 
 
 def input_validation(prompt, type):
