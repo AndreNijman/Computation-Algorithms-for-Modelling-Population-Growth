@@ -164,24 +164,24 @@ def run_chosen_module(module_number):
         # Show how more frequent fission events affect growth (Part 5)
         print(colored("\nMODULE 5: Model increases in fission-event frequency", 'red'))
         init, rate, unit, model_type, _ = sophisticated_model()
-    
+
         max_events = input_validation(colored("Enter the maximum number of fission events per growth time unit: ", 'yellow'), type='int')
         step = input_validation(colored("Enter the step size to increase frequency: ", 'yellow'), type='int')
         duration = input_validation(colored("Enter how many of your chosen time units to project: ", 'yellow'), type='int')
-    
+
         results = []
         for freq in range(1, max_events + 1, step):
             # Calculate the rate per fission event for each frequency
             fission_rate = (rate / 100) / freq
-    
+
             # Calculate the number of fissions over the projection time
             total_fissions = (time_conversion(unit, duration) / time_conversion(unit, 1)) * freq
-    
+
             # Use compound growth with fission frequency
             final_pop = init * (1 + fission_rate) ** total_fissions
-    
+
             results.append([freq, round(final_pop, 2)])
-    
+
         print(colored("\nEffect of increasing fission-event frequency:", 'yellow'))
         print(tabulate(results, headers=[colored("Fission Events/Unit", 'yellow'), colored("Final Population", 'yellow')], tablefmt="grid"))
 
