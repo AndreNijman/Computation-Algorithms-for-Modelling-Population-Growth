@@ -1,6 +1,7 @@
 from tabulate import tabulate
 from termcolor import colored  # Importing termcolor for coloring output
 
+
 def menu():
     '''
     Displays the main menu to the user and prompts for their selection.
@@ -24,6 +25,7 @@ def menu():
         else:
             run_chosen_module(choice)
 
+
 def run_chosen_module(module_number):
     '''
     Runs the module chosen by the user.
@@ -36,7 +38,7 @@ def run_chosen_module(module_number):
 
         print(colored("\nFuture Projection timeframe for both models", 'yellow'))
         proj_time = input_validation(colored("Enter the amount of time to project into the future: ", 'yellow'), type='int')
-        proj_unit = input_validation(colored("Enter the time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
 
         print(f"\n{colored('Naive Model:', 'green')} I = {n_init}, g = {n_rate}% per {n_unit}")
         print(f"{colored('Sophisticated Model:', 'blue')} I = {s_init}, g = {s_rate}% per {s_unit}, fission event frequency = {s_freq}")
@@ -97,7 +99,7 @@ def run_chosen_module(module_number):
         b_init, b_rate, b_unit, b_type, b_freq = sophisticated_model()
 
         proj_time = input_validation(colored("Enter the amount of time to project: ", 'yellow'), type='int')
-        proj_unit = input_validation(colored("Enter the time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
 
         a_result = run_models(a_init, a_rate, a_unit, a_type,
                               fission_event_frequency=a_freq,
@@ -119,7 +121,7 @@ def run_chosen_module(module_number):
 
         if target == 0:
             proj_time = input_validation(colored("Enter the amount of time to project for: ", 'yellow'), type='int')
-            proj_unit = input_validation(colored("Enter the projection time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+            proj_unit = input_validation(colored("Enter the projection time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
         else:
             proj_time = None
             proj_unit = "population"
@@ -182,7 +184,7 @@ def run_chosen_module(module_number):
     
         print(colored("\nEffect of increasing fission-event frequency:", 'yellow'))
         print(tabulate(results, headers=[colored("Fission Events/Unit", 'yellow'), colored("Final Population", 'yellow')], tablefmt="grid"))
-    
+
 
 def run_models(initial_population, growth_rate, growth_time_unit, model_type,
                fission_event_frequency=None, projection_time=None, projection_time_unit=None):
@@ -225,7 +227,7 @@ def input_validation(prompt, type):
     Retries up to 3 times before exiting the program.
     '''
     valid_menu = {'1', '2', '3', '4', '5', '6'}
-    valid_units = {'day', 'half-day', 'quarter-day', 'hour', 'minute', 'custom'}
+    valid_units = {'year', 'quarter-year', 'week', 'month', 'day', 'half-day', 'quarter-day', 'hour', 'minute', 'custom', 'second'}
 
     for _ in range(3):
         value = input(prompt).strip().lower()
@@ -247,6 +249,7 @@ def input_validation(prompt, type):
     print(colored("Too many invalid attempts. Exiting. AAHAAN STOP SPAMMING, IK ITS YOU 😔😔😔", 'red'))
     exit()
 
+
 def naive_model():
     '''
     Collects input values for the naive population model.
@@ -255,8 +258,9 @@ def naive_model():
     print(colored("\nNaive model", 'green'))
     init = input_validation(colored("Enter the initial population: ", 'yellow'), type='int')
     rate = input_validation(colored("Enter the growth rate (as a percentage without the symbol): ", 'yellow'), type='float')
-    unit = input_validation(colored("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+    unit = input_validation(colored("Enter the growth time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
     return init, rate, unit, "naive"
+
 
 def sophisticated_model():
     '''
@@ -267,7 +271,7 @@ def sophisticated_model():
     init = input_validation(colored("Enter the initial population: ", 'yellow'), type='int')
     rate = input_validation(colored("Enter the growth rate (as a percentage without the symbol): ", 'yellow'), type='float')
     unit = input_validation(colored("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
-    freq = input_validation(colored("Enter the fission-event frequency time unit (day, half-day, quarter-day, hour, minute, custom): ", 'yellow'), type='time_unit')
+    freq = input_validation(colored("Enter the fission-event frequency time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, custom): ", 'yellow'), type='time_unit')
 
     if freq == "custom":
         freq = input_validation(colored("Enter the number of fission events per growth rate time unit: ", 'yellow'), type='float')
@@ -281,6 +285,10 @@ def time_conversion(unit, amount):
     It takes the unit and the number of those units as arguments and returns the equivalent number of seconds.
     '''
     seconds_per_unit = {
+        "year": 31536000,
+        "quarter-year": 7884000,
+        "month": 2592000,
+        "week": 604800,
         "day": 86400,
         "half-day": 43200,
         "quarter-day": 21600,
@@ -291,4 +299,6 @@ def time_conversion(unit, amount):
     return seconds_per_unit[unit] * amount
 
 # Call the menu function to display the menu and start the program
+
+
 menu()
