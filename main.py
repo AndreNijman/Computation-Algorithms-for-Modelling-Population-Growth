@@ -38,7 +38,7 @@ def run_chosen_module(module_number):
 
         print(colored("\nFuture Projection timeframe for both models", 'yellow'))
         proj_time = input_validation(colored("Enter the amount of time to project into the future: ", 'yellow'), type='int')
-        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
 
         print(f"\n{colored('Naive Model:', 'green')} I = {n_init}, g = {n_rate}% per {n_unit}")
         print(f"{colored('Sophisticated Model:', 'blue')} I = {s_init}, g = {s_rate}% per {s_unit}, fission event frequency = {s_freq}")
@@ -99,7 +99,7 @@ def run_chosen_module(module_number):
         b_init, b_rate, b_unit, b_type, b_freq = sophisticated_model()
 
         proj_time = input_validation(colored("Enter the amount of time to project: ", 'yellow'), type='int')
-        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+        proj_unit = input_validation(colored("Enter the time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
 
         a_result = run_models(a_init, a_rate, a_unit, a_type,
                               fission_event_frequency=a_freq,
@@ -121,7 +121,7 @@ def run_chosen_module(module_number):
 
         if target == 0:
             proj_time = input_validation(colored("Enter the amount of time to project for: ", 'yellow'), type='int')
-            proj_unit = input_validation(colored("Enter the projection time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+            proj_unit = input_validation(colored("Enter the projection time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
         else:
             proj_time = None
             proj_unit = "population"
@@ -258,7 +258,7 @@ def naive_model():
     print(colored("\nNaive model", 'green'))
     init = input_validation(colored("Enter the initial population: ", 'yellow'), type='int')
     rate = input_validation(colored("Enter the growth rate (as a percentage without the symbol): ", 'yellow'), type='float')
-    unit = input_validation(colored("Enter the growth time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
+    unit = input_validation(colored("Enter the growth time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
     return init, rate, unit, "naive"
 
 
@@ -270,8 +270,8 @@ def sophisticated_model():
     print(colored("\nSophisticated model", 'blue'))
     init = input_validation(colored("Enter the initial population: ", 'yellow'), type='int')
     rate = input_validation(colored("Enter the growth rate (as a percentage without the symbol): ", 'yellow'), type='float')
-    unit = input_validation(colored("Enter the growth time unit (day, half-day, quarter-day, hour, minute): ", 'yellow'), type='time_unit')
-    freq = input_validation(colored("Enter the fission-event frequency time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, custom): ", 'yellow'), type='time_unit')
+    unit = input_validation(colored("Enter the growth time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
+    freq = input_validation(colored("Enter the fission-event frequency time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, custom, second): ", 'yellow'), type='time_unit')
 
     if freq == "custom":
         freq = input_validation(colored("Enter the number of fission events per growth rate time unit: ", 'yellow'), type='float')
