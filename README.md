@@ -68,7 +68,7 @@ pip install matplotlib tabulate termcolor
 
 View the design and explanation slides here:
 
-**[🔗 Download presentation slides (PDF)](slides.pdf)**
+**[🔗 Download presentation slides (PDF)](Math_Investigation_Presentation_Detailed.pptx)**
 
 placeholderforwhenimakepowerpoint
 
