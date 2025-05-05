@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 
+# Main entry point showing a text menu and routing to module functions
 
 def menu():
     '''
@@ -29,6 +30,7 @@ def menu():
         else:
             run_chosen_module(choice)
 
+# Determines which module to run based on user's choice
 
 def run_chosen_module(module_number):
     '''
@@ -81,6 +83,7 @@ def run_chosen_module(module_number):
         populations = [round(population, 2)]
 
         # Simulate population growth until the target is reached
+        # Keep compounding growth until the target is reached
         while population < target:
             added = population * rate_per_fission
             population += added
@@ -145,9 +148,11 @@ def run_chosen_module(module_number):
 
         # Projection by population or time
         if proj_unit == "population":
+        # Keep compounding growth until the target is reached
             while population < target:
                 added = population * rate_per_fission
                 new_pop = population + added
+            # Record population state for later tabulated display
                 rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
                 population = new_pop
                 time_elapsed += fission_unit_seconds
@@ -158,6 +163,7 @@ def run_chosen_module(module_number):
                     break
                 added = population * rate_per_fission
                 new_pop = population + added
+            # Record population state for later tabulated display
                 rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
                 population = new_pop
                 time_elapsed += fission_unit_seconds
@@ -192,6 +198,7 @@ def run_chosen_module(module_number):
         grid_color = "#2c3e50"
         text_color = "#e0e0e0"
 
+        # Loop through all preset fission frequencies
         for label, fission_seconds in fission_frequencies.items():
             total_seconds = time_conversion(unit, duration)
             fissions = int(total_seconds / fission_seconds)
@@ -208,8 +215,10 @@ def run_chosen_module(module_number):
 
                 if label in ["minute", "second"]:
                     if i == 0 or i == fissions - 1:
+            # Record population state for later tabulated display
                         rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
                 else:
+            # Record population state for later tabulated display
                     rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
 
                 population = new_pop
@@ -287,6 +296,7 @@ def run_chosen_module(module_number):
             print(colored(f"\nGraph saved to: {filename}", 'green'))
             print(colored("Graph saved successfully!", 'green'))
 
+# Core logic for calculating population growth for both model types
 
 def run_models(initial_population, growth_rate, growth_time_unit, model_type,
                fission_event_frequency=None, projection_time=None, projection_time_unit=None):
@@ -322,6 +332,7 @@ def run_models(initial_population, growth_rate, growth_time_unit, model_type,
         total_fissions = (total_projection_time / growth_unit_time) * fissions_per_unit
         return initial_population * (1 + rate_per_fission) ** total_fissions
 
+# Reusable function for safely getting validated input from the user
 
 def input_validation(prompt, type):
     '''
@@ -351,6 +362,7 @@ def input_validation(prompt, type):
     print(colored("Too many invalid attempts. Exiting. AAHAAN STOP SPAMMING, IK ITS YOU 😔😔😔", 'red'))
     exit()
 
+# Collects all inputs for the naive population growth model
 
 def naive_model():
     '''
@@ -363,6 +375,7 @@ def naive_model():
     unit = input_validation(colored("Enter the growth time unit (year, quarter-year, month, week, day, half-day, quarter-day, hour, minute, second): ", 'yellow'), type='time_unit')
     return init, rate, unit, "naive"
 
+# Collects inputs for a sophisticated (compound) growth model
 
 def sophisticated_model():
     '''
@@ -380,6 +393,7 @@ def sophisticated_model():
 
     return init, rate, unit, "sophisticated", freq
 
+# Converts a given unit of time (like days or hours) into seconds
 
 def time_conversion(unit, amount):
     '''
@@ -401,6 +415,5 @@ def time_conversion(unit, amount):
     return seconds_per_unit[unit] * amount
 
 # Call the menu function to display the menu and start the program
-
 
 menu()
