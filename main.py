@@ -1,5 +1,9 @@
 from tabulate import tabulate
 from termcolor import colored  # Importing termcolor for coloring output
+import matplotlib.pyplot as plt
+import os
+from datetime import datetime
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 
 
 def menu():
@@ -158,32 +162,134 @@ def run_chosen_module(module_number):
                 population = new_pop
                 time_elapsed += fission_unit_seconds
 
+        print(f"\n{colored('Projection time:', 'cyan')} {time_elapsed} seconds")
+        print(f"\n{colored('Table of results', 'cyan')} {population}")
+        
         print(tabulate(rows, headers=[colored("Opening", 'yellow'), colored("Added", 'yellow'), colored("Closing", 'yellow')], tablefmt="grid"))
 
     elif module_number == 5:
-        # Show how more frequent fission events affect growth (Part 5)
+        # Part 5: Simulate increases in fission-event frequency with styled dark graph and correctly sized zoom
+        import matplotlib.pyplot as plt
+        import os
+        from datetime import datetime
+        from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
+
         print(colored("\nMODULE 5: Model increases in fission-event frequency", 'red'))
-        init, rate, unit, model_type, _ = sophisticated_model()
 
-        max_events = input_validation(colored("Enter the maximum number of fission events per growth time unit: ", 'yellow'), type='int')
-        step = input_validation(colored("Enter the step size to increase frequency: ", 'yellow'), type='int')
-        duration = input_validation(colored("Enter how many of your chosen time units to project: ", 'yellow'), type='int')
+        init = 1000
+        rate = 100
+        unit = "day"
+        duration = 1
 
-        results = []
-        for freq in range(1, max_events + 1, step):
-            # Calculate the rate per fission event for each frequency
-            fission_rate = (rate / 100) / freq
+        os.makedirs("graphs", exist_ok=True)
 
-            # Calculate the number of fissions over the projection time
-            total_fissions = (time_conversion(unit, duration) / time_conversion(unit, 1)) * freq
+        fission_frequencies = {
+            "quarter-day": time_conversion("quarter-day", 1),
+            "2-hour": 2 * 3600,
+            "hour": 3600,
+            "minute": 60,
+            "second": 1
+        }
 
-            # Use compound growth with fission frequency
-            final_pop = init * (1 + fission_rate) ** total_fissions
+        background_color = "#0e1a24"
+        main_line_color = "#fca311"
+        grid_color = "#2c3e50"
+        text_color = "#e0e0e0"
 
-            results.append([freq, round(final_pop, 2)])
+        for label, fission_seconds in fission_frequencies.items():
+            total_seconds = time_conversion(unit, duration)
+            fissions = int(total_seconds / fission_seconds)
+            rate_per_fission = (rate / 100) / fissions
 
-        print(colored("\nEffect of increasing fission-event frequency:", 'yellow'))
-        print(tabulate(results, headers=[colored("Fission Events/Unit", 'yellow'), colored("Final Population", 'yellow')], tablefmt="grid"))
+            print(colored(f"\n--- Fission every {label} ---", 'yellow'))
+            population = init
+            populations = [population]
+            rows = []
+
+            for i in range(fissions):
+                added = population * rate_per_fission
+                new_pop = population + added
+
+                if label in ["minute", "second"]:
+                    if i == 0 or i == fissions - 1:
+                        rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
+                else:
+                    rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
+
+                population = new_pop
+                populations.append(population)
+
+            if label in ["minute", "second"]:
+                print("Start and end only (too many rows to display):")
+            print(tabulate(
+                rows,
+                headers=[colored("Opening", 'yellow'), colored("Added", 'yellow'), colored("Closing", 'yellow')],
+                tablefmt="grid"
+            ))
+            print(f"{colored('Final population after 1 day:', 'cyan')} {round(population, 4)}")
+
+            timestamp = datetime.now().strftime("%A_%H-%M")
+            filename = f"graphs/{timestamp}_{label}.png"
+
+            fig, ax = plt.subplots(figsize=(8, 4))
+            fig.patch.set_facecolor(background_color)
+            ax.set_facecolor(background_color)
+
+            ax.plot(
+                range(len(populations)),
+                populations,
+                marker='o' if label not in ["minute", "second"] else '.',
+                markersize=4 if label not in ["minute", "second"] else 1,
+                linestyle='-',
+                linewidth=1.5,
+                color=main_line_color,
+                label=label
+            )
+
+            ax.set_title(f'Fission every {label}', fontsize=14, fontweight='bold', color=text_color)
+            ax.set_xlabel('Fission Event Number', fontsize=12, color=text_color)
+            ax.set_ylabel('Population Size', fontsize=12, color=text_color)
+            ax.tick_params(colors=text_color)
+            ax.grid(True, linestyle='--', color=grid_color, alpha=0.3)
+            ax.legend(loc='upper left', fontsize=10, facecolor=background_color, labelcolor=text_color)
+
+            if label in ["minute", "second"]:
+                axins = inset_axes(
+                    ax,
+                    width="35%",
+                    height="35%",
+                    loc='lower right',
+                    bbox_to_anchor=(0.0, 0.08, 1, 1),  # slightly raised
+                    bbox_transform=ax.transAxes
+                )
+                zoom_range = 50
+                axins.plot(
+                    range(zoom_range),
+                    populations[:zoom_range],
+                    marker='o',
+                    markersize=2,
+                    linestyle='-',
+                    linewidth=1,
+                    color=main_line_color
+                )
+                axins.set_xlim(0, zoom_range)
+                axins.set_ylim(
+                    min(populations[:zoom_range]) * 0.999,
+                    max(populations[:zoom_range]) * 1.001
+                )
+                axins.tick_params(colors=text_color, labelsize=8)
+                axins.set_facecolor(background_color)
+                axins.grid(True, linestyle='--', color=grid_color, alpha=0.4)
+                axins.set_xticklabels([])
+                axins.set_yticklabels([])
+                mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="gray")
+
+            plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.15)
+            plt.savefig(filename, facecolor=fig.get_facecolor())
+            plt.close()
+
+            print(colored(f"\nGraph saved to: {filename}", 'green'))
+            print(colored("Graph saved successfully!", 'green'))
 
 
 def run_models(initial_population, growth_rate, growth_time_unit, model_type,
@@ -302,3 +408,4 @@ def time_conversion(unit, amount):
 
 
 menu()
+
