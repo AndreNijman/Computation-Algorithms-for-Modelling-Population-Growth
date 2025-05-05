@@ -77,5 +77,5 @@ placeholderforwhenimakepowerpoint
 ## 👤 Author
 
 André  
-Year 9 Student  
-Mathematics Investigation Term 2 2025  
+Year 9 PMS Student  
+Mathematics Investigation Semester 1 2025  
