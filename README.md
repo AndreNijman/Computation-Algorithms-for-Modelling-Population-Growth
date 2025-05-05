@@ -160,5 +160,5 @@ Make sure to open this alongside the PowerPoint for full documentation.
 ## 👤 Author
 
 André Nijman
-Year 9 PMS Student  
+Year 9 Perth Modern School Student  
 Mathematics Investigation Semester 1 2025  
