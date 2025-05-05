@@ -169,10 +169,6 @@ def run_chosen_module(module_number):
 
     elif module_number == 5:
         # Part 5: Simulate increases in fission-event frequency with styled dark graph and correctly sized zoom
-        import matplotlib.pyplot as plt
-        import os
-        from datetime import datetime
-        from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 
         print(colored("\nMODULE 5: Model increases in fission-event frequency", 'red'))
 
@@ -408,4 +404,3 @@ def time_conversion(unit, amount):
 
 
 menu()
-
