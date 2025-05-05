@@ -68,31 +68,31 @@ pip install matplotlib tabulate termcolor
 
 ### Fission Every Quarter-Day
 
-![Quarter-Day Graph](graph-examples\Monday_12-53_quarter-day.png)
+![Quarter-Day Graph](graph-examples/Monday_12-53_quarter-day.png)
 
 Population doubles every 6 hours — clear exponential growth pattern.
 
 ### Fission Every 2 Hours
 
-![2-Hour Graph](graph-examples\Monday_12-53_2-hour.png)
+![2-Hour Graph](graph-examples/Monday_12-53_2-hour.png)
 
 Growth is slightly smoother than quarter-day, with more steps.
 
 ### Fission Every Hour
 
-![Hourly Graph](graph-examples\Monday_12-53_hour.png)
+![Hourly Graph](graph-examples/Monday_12-53_hour.png)
 
 Finer-grained growth: more consistent curve forming.
 
 ### Fission Every Minute
 
-![Minute Graph](graph-examples\Monday_12-53_minute.png)
+![Minute Graph](graph-examples/Monday_12-53_minute.png)
 
 Very small changes per step — zoomed inset shows early growth stages.
 
 ### Fission Every Second
 
-![Second Graph](graph-examples\Monday_12-53_second.png)
+![Second Graph](graph-examples/Monday_12-53_second.png)
 
 Extremely small growth increments — almost continuous curve.
 
