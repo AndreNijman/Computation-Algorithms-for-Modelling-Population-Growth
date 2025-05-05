@@ -16,6 +16,7 @@ This Python project models bacterial population growth using algorithms suited f
 
 ---
 
+
 ## 🧪 Modules
 
 ```text
@@ -25,6 +26,44 @@ This Python project models bacterial population growth using algorithms suited f
 (4) Generate detailed projections
 (5) Simulate increase in fission frequency
 ```
+
+### 🔢 Module 1 – Compare Naive and Sophisticated Models  
+You enter values for both models (initial population, growth rate, time unit, etc.).  
+It then calculates how large the population would grow after a chosen amount of time using:
+- **Naive** model: simple linear growth  
+- **Sophisticated** model: compound growth with fission frequency  
+Both results are displayed for comparison.
+
+### 🎯 Module 2 – Time to Reach a Target Population  
+You input a target population and model parameters.  
+The program simulates growth using the **sophisticated model**, repeating small steps until the population reaches the target.  
+It prints how many fission events (and how much time) it took to get there.
+
+### ⚖️ Module 3 – Compare Two Sophisticated Models  
+You enter values for two different sophisticated models.  
+The program simulates both models over the same time period and shows how their final populations compare.  
+This helps explore how fission frequency or growth rates affect outcomes.
+
+### 📋 Module 4 – Generate Detailed Projections  
+You can choose a population target or time-based projection.  
+The program prints a table that shows, for every fission event:
+- Opening population  
+- Growth added  
+- Closing population  
+It's useful for visualizing how small changes accumulate over time.
+
+### 📈 Module 5 – Simulate Increase in Fission Frequency  
+This module models what happens if you increase how often fission happens.  
+It simulates 5 scenarios:
+- quarter-day  
+- 2-hour  
+- hour  
+- minute  
+- second  
+For each one, it generates a graph and saves it in the `graphs/` folder.  
+Graphs for "minute" and "second" include zoomed-in views to highlight small changes.
+
+
 
 ---
 
@@ -110,6 +149,6 @@ placeholderforwhenimakepowerpoint
 
 ## 👤 Author
 
-André  
+André Nijman
 Year 9 PMS Student  
 Mathematics Investigation Semester 1 2025  
