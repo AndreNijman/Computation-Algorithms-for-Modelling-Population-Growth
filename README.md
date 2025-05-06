@@ -173,9 +173,6 @@ View the design and explanation slides here:
 
 ---
 
-
----
-
 ## 📄 Project Report (PDF)
 
 This project is accompanied by a formal investigation report that explains the design, logic, and outcomes in detail.
@@ -184,6 +181,7 @@ This project is accompanied by a formal investigation report that explains the d
 
 Make sure to open this alongside the PowerPoint for full documentation.
 
+---
 
 ## 👤 Author
 
