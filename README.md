@@ -69,6 +69,34 @@ Graphs for "minute" and "second" include zoomed-in views to highlight small chan
 
 ## 🚀 Getting Started
 
+### 📥 Install from GitHub Release
+
+1. Go to the [Releases page](https://github.com/AndreNijman/Computation-Algorithms-for-Modelling-Population-Growth/releases)  
+2. Download the **Source code (.zip)** from the latest/desired release  
+3. Unzip it on your computer
+
+### ▶️ Run the Program
+
+1. Open a terminal in the unzipped folder  
+2. Install dependencies:
+
+```bash
+pip install matplotlib tabulate termcolor
+```
+
+3. Run the main script:
+
+```bash
+python main.py
+```
+
+4. Follow the prompts in the terminal
+
+Graphs will be saved to the `graphs/` folder with timestamped filenames.
+
+---
+
+
 1. Run the program:
 
 ```bash
@@ -88,7 +116,7 @@ Graphs will be saved to the `graphs/` folder with timestamped filenames.
 /main.py       → main program
 /.gitignore    → excludes graphs folder from tracking
 /README.md     → this file
-/slides.pdf    → presentation slides (optional)
+/presentation  → folder with presenting files, and example graphs
 ```
 
 ---
@@ -161,4 +189,4 @@ Make sure to open this alongside the PowerPoint for full documentation.
 
 André Nijman
 Year 9 Perth Modern School Student  
-Mathematics Investigation Semester 1 2025  
+Mathematics Investigation Semester 1 2025
