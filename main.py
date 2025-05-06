@@ -149,7 +149,7 @@ def run_chosen_module(module_number):
 
         # Projection by population or time
         if proj_unit == "population":
-        # Keep compounding growth until the target is reached
+            # Keep compounding growth until the target is reached
             while population < target:
                 added = population * rate_per_fission
                 new_pop = population + added
@@ -171,7 +171,7 @@ def run_chosen_module(module_number):
 
         print(f"\n{colored('Projection time:', 'cyan')} {time_elapsed} seconds")
         print(f"\n{colored('Table of results', 'cyan')} {population}")
-        
+
         print(tabulate(rows, headers=[colored("Opening", 'yellow'), colored("Added", 'yellow'), colored("Closing", 'yellow')], tablefmt="grid"))
 
     elif module_number == 5:
@@ -216,10 +216,10 @@ def run_chosen_module(module_number):
 
                 if label in ["minute", "second"]:
                     if i == 0 or i == fissions - 1:
-            # Record population state for later tabulated display
+                        # Record population state for later tabulated display
                         rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
                 else:
-            # Record population state for later tabulated display
+                    # Record population state for later tabulated display
                     rows.append([round(population, 2), round(added, 2), round(new_pop, 2)])
 
                 population = new_pop
