@@ -179,7 +179,7 @@ def run_chosen_module(module_number):
 
         print(colored("\nMODULE 5: Model increases in fission-event frequency", 'red'))
 
-        init = 1000
+        init = input_validation(colored("Enter the initial population: ", 'yellow'), type='int')
         rate = 100
         unit = "day"
         duration = 1
