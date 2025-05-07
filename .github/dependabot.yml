@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-type: "direct"
+    ignore:
+      - dependency-name: "matplotlib"
+        versions: ["<3.0.0"]
+      - dependency-name: "tabulate"
+        versions: ["<0.8.0"]
+      - dependency-name: "termcolor"
+        versions: ["<1.0.0"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      prefix-development: "dev-deps"
