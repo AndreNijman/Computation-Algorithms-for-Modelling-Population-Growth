@@ -172,7 +172,7 @@ def run_chosen_module(module_number):
         print(f"\n{colored('Projection time:', 'cyan')} {time_elapsed} seconds")
         print(f"\n{colored('Table of results', 'cyan')} {population}")
 
-        print(tabulate(rows, headers=[colored("Opening", 'yellow'), colored("Added", 'yellow'), colored("Closing", 'yellow')], tablefmt="grid"))
+        print(tabulate(rows, headers=[colored("Opening", 'yellow'), colored("Added", 'yellow'), colored("Closing", 'yellow')], tablefmt="mixed_grid"))
 
     elif module_number == 5:
         # Part 5: Simulate increases in fission-event frequency with styled dark graph and correctly sized zoom
